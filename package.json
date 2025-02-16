@@ -1,0 +1,25 @@
+{
+  "name": "optimod-emberplus",
+  "version": "1.0.0",
+  "description": "Orban Optimod to emberplus gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattlamb99/optimod-emberplus.git"
+  },
+  "author": "mattlamb99",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattlamb99/optimod-emberplus/issues"
+  },
+  "homepage": "https://github.com/mattlamb99/optimod-emberplus#readme",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "dotenv": "^16.0.0",
+    "emberplus-connection": "^0.2.2",
+    "net-snmp": "^3.19.0"
+  }
+}
