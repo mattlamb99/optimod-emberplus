@@ -18,7 +18,7 @@
  *   - EMBERPLUS_PORT (default 9000)
  */
 
-const chalk = require('chalk').default;
+const chalk = require('chalk');
 const snmp = require('net-snmp');
 require('dotenv').config();
 
