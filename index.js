@@ -42,15 +42,16 @@ const EMBERPLUS_PORT = parseInt(process.env.EMBERPLUS_PORT) || 9000;
 // Numeric OIDs from the Optimod MIB.
 // (Adjust these if your MIB requires different numeric values)
 const oids = {
-  softwareVersion: '1.3.6.1.4.1.41877.5.1.1',
-  stationName: '1.3.6.1.4.1.41877.5.1.2',
-  inputAnalog: '1.3.6.1.4.1.41877.5.3.1',
-  inputDigital: '1.3.6.1.4.1.41877.5.3.2',
-  analogInputSilent: '1.3.6.1.4.1.41877.5.3.3',
-  aesInputSilent: '1.3.6.1.4.1.41877.5.3.4',
-  aesInputError: '1.3.6.1.4.1.41877.5.3.5',
-  powerSupply1Status: '1.3.6.1.4.1.41877.5.3.6',
-  powerSupply2Status: '1.3.6.1.4.1.41877.5.3.7'
+  softwareVersion: '1.3.6.1.4.1.41877.5.1.1.0',
+  stationName: '1.3.6.1.4.1.41877.5.1.2.0',
+
+  inputAnalog: '1.3.6.1.4.1.41877.5.3.1.0',
+  inputDigital: '1.3.6.1.4.1.41877.5.3.2.0',
+  analogInputSilent: '1.3.6.1.4.1.41877.5.3.3.0',
+  aesInputSilent: '1.3.6.1.4.1.41877.5.3.4.0',
+  aesInputError: '1.3.6.1.4.1.41877.5.3.5.0',
+  powerSupply1Status: '1.3.6.1.4.1.41877.5.3.6.0',
+  powerSupply2Status: '1.3.6.1.4.1.41877.5.3.7.0'
 };
 
 // Create an SNMP session to the Optimod.
@@ -109,6 +110,10 @@ const connectedParameterNode = new NumberedTreeNodeImpl(
 const lastPollParameterNode = new NumberedTreeNodeImpl(
   1,
   new ParameterImpl(ParameterType.String, 'Last Poll', 'Timestamp of the last successful SNMP poll', '', undefined, undefined, ParameterAccess.Read)
+);
+const pollRateParameterNode = new NumberedTreeNodeImpl(
+  1,
+  new ParameterImpl(ParameterType.String, 'Poll Rate', 'Currently Configured SNMP poll rate', '', undefined, undefined, ParameterAccess.Read)
 );
 
 // -------------------------------------------------
@@ -178,6 +183,11 @@ const statusSubtree = {
     2,
     new EmberNodeImpl('Last Poll', 'Timestamp of last successful SNMP poll', undefined, true),
     { 1: lastPollParameterNode }
+  ),
+  3: new NumberedTreeNodeImpl(
+    3,
+    new EmberNodeImpl('Poll Rate', 'How often does this poll', undefined, true),
+    { 1: pollRateParameterNode }
   )
 };
 
@@ -212,6 +222,8 @@ const tree = {
 const server = new EmberServer(EMBERPLUS_PORT);
 server.init(tree);
 console.log(chalk.blue(`EmberPlus server running on port ${EMBERPLUS_PORT}`));
+// Update the poll rate parameter node with the current poll interval
+server.update(pollRateParameterNode, { value: `${POLL_INTERVAL_MS} ms` });
 
 // -------------------------------------------------
 // 4. SNMP Polling to Update the Tree
